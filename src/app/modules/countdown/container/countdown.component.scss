@@ -1,0 +1,17 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    h1, button {
+        align-self: center;
+    }
+
+    .timer-item {
+        background-color: rgb(155, 141, 169);
+    }
+
+    input {
+        max-width: 250px;
+    }
+}
