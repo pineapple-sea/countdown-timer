@@ -41,7 +41,7 @@ export class TimerComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnChanges(changes: SimpleChanges): void {
     const timer = changes['timer'].currentValue;
-    // this.isTimerStopped$.next(timer.isTimerStopped);
+    this.isTimerStopped$.next(timer.isTimerStopped);
 
     this.calcullateTimerData(timer);
   }
@@ -54,7 +54,7 @@ export class TimerComponent implements OnInit, OnChanges, OnDestroy {
     this.subscribeTimerInterval = interval(1000)
       .pipe(
         tap((seconds) => {
-          if (seconds === this.timer.seconds) {
+          if (seconds === this.timer.seconds || seconds > this.timer.seconds) {
             this.deleteTimer(this.timer);
           }
         }),
@@ -67,13 +67,33 @@ export class TimerComponent implements OnInit, OnChanges, OnDestroy {
 
   public playTimer() {
     this.isTimerStopped$.next(false);
+
+    const timers = JSON.parse(localStorage.getItem('timers'));
+
+    let timer = timers.map((t) => {
+      if (t.name === this.timer.name) {
+        t.date = moment();
+      }
+      return t;
+    });
+    localStorage.setItem('timers', JSON.stringify(timers));
+
     this.startTimer();
-    // this.toggleTimer();
+    this.toggleTimer();
   }
 
   public pauseTimer() {
     this.isTimerStopped$.next(true);
-    // this.toggleTimer();
+    this.toggleTimer();
+
+    const timers = JSON.parse(localStorage.getItem('timers'));
+    let timer = timers.map((t) => {
+      if (t.name === this.timer.name) {
+        t.seconds = this.timerSecondsAmount;
+      }
+      return t;
+    });
+    localStorage.setItem('timers', JSON.stringify(timers));
   }
 
   public deleteTimer(timer) {
@@ -86,9 +106,13 @@ export class TimerComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private calcullateTimerData(timer) {
-    this.timerSecondsAmount = Math.ceil(
-      moment(timer.date).add(timer.seconds, 'seconds').diff(moment()) / 1000
-    );
+    if (this.isTimerStopped$.value) {
+      this.timerSecondsAmount = timer.seconds;
+    } else {
+      this.timerSecondsAmount = Math.ceil(
+        moment(timer.date).add(timer.seconds, 'seconds').diff(moment()) / 1000
+      );
+    }
   }
 
   private toggleTimer() {

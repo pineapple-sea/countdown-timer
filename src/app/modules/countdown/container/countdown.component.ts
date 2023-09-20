@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Observable, tap, timer } from 'rxjs';
+import { Observable, map, tap, timer } from 'rxjs';
 import { TimerQuery } from 'src/app/store/timer.query';
 import { TimerService } from 'src/app/store/timer.service';
 import * as moment from 'moment';
@@ -12,7 +12,7 @@ import * as moment from 'moment';
 })
 export class CountdownComponent implements OnInit {
   public timerForm: FormGroup;
-  public timers$: Observable<any[]>;
+  public timers$: Observable<any[]>; // make Subject instead Observable
   public seconds: number = 0;
   constructor(
     private formBuilder: FormBuilder,
@@ -64,6 +64,14 @@ export class CountdownComponent implements OnInit {
         },
       ])
     );
+  }
+
+  public sortTimers(sortBy) {
+     this.timers$.pipe(
+      map((t) => {
+       console.log(t.sort((a,b) => b.seconds - a.seconds));
+      })
+    ).subscribe();
   }
 
   private initForm(): void {

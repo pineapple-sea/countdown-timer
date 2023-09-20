@@ -48,10 +48,12 @@
             <label for="floatingPassword">Search</label>
         </div>
 
-        <select class="form-select w-25" aria-label="Filter by period of time">
+        <button (click)="sortTimers('longest')">Sort</button>
+
+        <!-- <select class="form-select w-25" aria-label="Sort by period of time">
             <option selected>Longest</option>
             <option value="1">Shortes</option>
-        </select>
+        </select> -->
     </div>
     <div class="container text-center">
         <div class="row row-cols-3">
