@@ -54,7 +54,7 @@ export class TimerComponent implements OnInit, OnChanges, OnDestroy {
     this.subscribeTimerInterval = interval(1000)
       .pipe(
         tap((seconds) => {
-          if (seconds === this.timer.seconds || seconds > this.timer.seconds) {
+          if (seconds === this.timer.seconds || this.timerSecondsAmount < 0) {
             this.deleteTimer(this.timer);
           }
         }),
